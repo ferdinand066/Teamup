@@ -1,0 +1,13 @@
+
+.user-active-dropdown {
+    transition: 200ms ease-out;
+    transform: scale(0.95, 1);
+    opacity: 1;
+}
+
+.user-not-active-dropdown {
+    transition: 75ms ease-in;
+    transform: scale(1, 0.95);
+    opacity: 0;
+}  
+
