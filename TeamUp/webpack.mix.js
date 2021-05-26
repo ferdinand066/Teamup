@@ -18,8 +18,7 @@ mix
     require('tailwindcss'),
     require('postcss-nested'),
     require('autoprefixer'),
-  ])
-  .tailwind('./tailwind.config.js');
+  ]);
 
 if (mix.inProduction()) {
   mix
