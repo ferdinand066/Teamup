@@ -47,6 +47,22 @@
                     </div>
 
                     <div class="flex flex-wrap">
+                        <label for="phone" class="block text-gray-700 text-sm font-bold mb-2 sm:mb-4">
+                            {{ __('Phone Number') }}:
+                        </label>
+
+                        <input id="phone" type="text"
+                            class="form-input w-full @error('phone') border-red-500 @enderror" name="phone"
+                            value="{{ old('phone') }}" required autocomplete="phone">
+
+                        @error('phone')
+                        <p class="text-red-500 text-xs italic mt-4">
+                            {{ $message }}
+                        </p>
+                        @enderror
+                    </div>
+
+                    <div class="flex flex-wrap">
                         <label for="password" class="block text-gray-700 text-sm font-bold mb-2 sm:mb-4">
                             {{ __('Password') }}:
                         </label>

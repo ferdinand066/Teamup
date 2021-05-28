@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('role');
             $table->string('password');
             $table->string('picture_path')->nullable();
+            $table->string('phone');
             $table->json('experience')->nullable();
             $table->timestamps();
         });

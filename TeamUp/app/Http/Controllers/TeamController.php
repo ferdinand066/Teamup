@@ -14,4 +14,8 @@ class TeamController extends Controller
         if ($data == null) return redirect('/');
         return view('team.create', compact(['data']));
     }
+
+    public function insert(Request $request){
+        dd($request);
+    }
 }

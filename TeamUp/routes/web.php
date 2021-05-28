@@ -25,6 +25,9 @@ Route::get('/profile/{id}', [\App\Http\Controllers\ProfileController::class, 'in
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/profile/{id}/update', [\App\Http\Controllers\ProfileController::class, 'update'])->middleware('self');
+    Route::get('/team/create', [\App\Http\Controllers\TeamController::class, 'index']);
+    Route::get('/notification', [\App\Http\Controllers\NotificationController::class, 'index']);
     
+    Route::post('/team/create/insert-team', [\App\Http\Controllers\TeamController::class, 'insert']);
 });
 

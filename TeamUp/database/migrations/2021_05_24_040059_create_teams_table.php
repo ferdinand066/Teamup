@@ -17,7 +17,13 @@ class CreateTeamsTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('creator_id');
             $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
-            $table->json('team_requirement');
+            $table->string('name');
+            $table->string('short_description');
+            $table->string('full_description');
+            $table->bigInteger('min_salary');
+            $table->bigInteger('max_salary')->nullable();
+            $table->json('position_list');
+            $table->json('address');
             $table->timestamps();
         });
     }

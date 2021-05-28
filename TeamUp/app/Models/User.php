@@ -25,7 +25,8 @@ class User extends Authenticatable
         'balance',
         'role',
         'experience',
-        'picture_path'
+        'picture_path',
+        'phone'
     ];
 
     /**
