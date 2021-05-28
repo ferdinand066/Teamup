@@ -20,8 +20,7 @@ class CreateTeamsTable extends Migration
             $table->string('name');
             $table->string('short_description');
             $table->string('full_description');
-            $table->bigInteger('min_salary');
-            $table->bigInteger('max_salary')->nullable();
+            $table->bigInteger('salary');
             $table->json('position_list');
             $table->json('address');
             $table->timestamps();

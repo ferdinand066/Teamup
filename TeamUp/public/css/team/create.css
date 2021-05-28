@@ -1,0 +1,9 @@
+span.inline-flex.items-center.my-1:nth-child(3n){
+    background-color: #FECACA;
+}
+span.inline-flex.items-center.my-1:nth-child(3n+1){
+    background-color: #FDE68A;
+}
+span.inline-flex.items-center.my-1:nth-child(3n+2){
+    background-color: #A7F3D0;
+}

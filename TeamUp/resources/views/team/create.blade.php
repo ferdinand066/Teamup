@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('title', 'Create Team')
+@section('style-script')
+  <link rel="stylesheet" href="{{ asset('css/team/create.css') }}">
+  <script src="{{ asset('js/team/create.js') }}"></script>
+@endsection
 @section('content')
 <form action="/team/create/insert-team" method="POST">
 <div class="space-y-6 mt-6 px-2 sm:px-6">
@@ -17,11 +21,11 @@
           <div class="space-y-6" action="/team/create/insert-team" method="POST">
             <div class="grid grid-cols-3 gap-6">
               <div class="col-span-3 sm:col-span-2">
-                <label for="team_name" class="block text-sm font-medium text-gray-700">
+                <label for="name" class="block text-sm font-medium text-gray-700">
                   Team Name
                 </label>
                 <div class="mt-1 flex rounded-md shadow-sm">
-                  <input type="text" name="team_name" id="team_name" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300" placeholder="Your team name">
+                  <input type="text" name="name" id="name" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300" placeholder="Your team name">
                 </div>
               </div>
             </div>
@@ -67,41 +71,28 @@
 
               <div class="col-span-6 sm:col-span-3">
                 <div class="col-span-3 sm:col-span-2">
-                  <label for="min_salary" class="block text-sm font-medium text-gray-700">
-                    Salary Range
+                  <label for="salary" class="block text-sm font-medium text-gray-700">
+                    Salary
                   </label>
                   <div class="mt-1 flex rounded-md shadow-sm">
                     <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
                       $
                     </span>
-                    <input type="number" name="min_salary" id="min_salary" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="Min Range">
+                    <input type="number" name="salary" id="salary" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="Salary">
                   </div>
                 </div>
               </div>
   
-              <div class="col-span-6 sm:col-span-3">
-                <div class="col-span-3 sm:col-span-2">
-                  <label for="max_salary" class="hidden sm:block text-sm font-medium text-gray-700">
-                    &nbsp
-                  </label>
-                  <div class="mt-1 flex rounded-md shadow-sm">
-                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
-                      $
-                    </span>
-                    <input type="number" name="max_salary" id="max_salary" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="Max Range (Optional)">
-                  </div>
-                </div>  
-              </div>
-  
               <div class="col-span-6">
                 <label for="position" class="block text-sm font-medium text-gray-700">Positon Required</label>
-                <div class="py-2">
-                  <?php for ($i = 0; $i < 100; $i++){ ?>
-                  <span class="inline-flex items-center mx-0.5 my-1 px-4 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
-                    {{ 'Article ' . $i }}
-                  </span>
-                  <?php } ?>
-                  
+                <div class="job-container py-2">
+                  {{-- <span class="job-list inline-flex items-center mx-0.5 my-1 px-4 pr-1 py-1 rounded-full text-sm font-medium text-indigo-800">
+                    <span class="mr-3">{{ 'Article ' . $i }} </span>
+                    <input type="hidden" name="employee_list[]" value="asd">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 opacity-0" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </span> --}}
                 </div>
                 
                 <div class="mt-1 flex">
@@ -110,7 +101,7 @@
                       <option value="{{ $value->id }}"> {{ $value->name }} </option>
                     @endforeach
                   </select>
-                  <button type="button" class="ml-1 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <button type="button" id="add-job" class="ml-1 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Add
                   </button>
                 </div>

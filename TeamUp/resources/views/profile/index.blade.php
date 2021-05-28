@@ -51,31 +51,43 @@
         </div>
   
         <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
-          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+          <div class="@error('name') border-red-500 @enderror sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <label for="name" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
               Full Name
             </label>
             <div class="mt-1 sm:mt-0 sm:col-span-2">
-              <div class="max-w-lg flex rounded-md shadow-sm">
+              <div class="max-w-lg flex rounded-md shadow-sm flex-col">
                 <input 
                   @cannot('update-profile', [$data->id, Auth::user()->id])
                     disabled
                   @endcan 
                   value="{{ $data->name }}" type="text" name="name" id="name" autocomplete="name" class="flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-none rounded-r-md sm:text-sm border-gray-300">
-              </div>
+                  @error('name')
+                  <p class="text-red-500 text-xs italic mt-4">
+                      {{ $message }}
+                  </p>
+                  @enderror
+
+                </div>
             </div>
           </div>
 
-          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+          <div class="@error('phone') border-red-500 @enderror sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <label for="phone" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
               Phone Number
             </label>
-            <div class="mt-1 sm:mt-0 sm:col-span-2">
+            <div class="mt-1 sm:mt-0 sm:col-span-2 flex flex-col">
               <input 
               @cannot('update-profile', [$data->id, Auth::user()->id])
                 disabled
               @endcan 
               value="{{ $data->phone }}" id="phone" name="phone" type="text" autocomplete="phone" class="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md disabled:opacity-50">
+              
+              @error('phone')
+              <p class="text-red-500 text-xs italic mt-4">
+                  {{ $message }}
+              </p>
+              @enderror
             </div>
           </div>
 
@@ -97,11 +109,11 @@
             </div>
           </div>
 
-          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+          <div class="@error('balance') border-red-500 @enderror sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
             <label for="balance" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
               Balance
             </label>
-            <div class="mt-1 sm:mt-0 sm:col-span-2">
+            <div class="mt-1 sm:mt-0 sm:col-span-2 flex flex-col">
               <div class="max-w-lg flex rounded-md shadow-sm">
                 <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
                   $
@@ -109,8 +121,13 @@
                 <input 
                   @cannot('update-profile', [$data->id, Auth::user()->id])
                     disabled
-                  @endcan value="{{ $data->balance }}" id="balance" name="balance" type="number" autocomplete="email" class="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md">
+                  @endcan value="{{ $data->balance }}" id="balance" name="balance" type="number" autocomplete="email" class="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-none rounded-r-md">
               </div>
+              @error('balance')
+              <p class="text-red-500 text-xs italic mt-4">
+                  {{ $message }}
+              </p>
+              @enderror
             </div>
           </div>
       </div>
@@ -130,6 +147,21 @@
         </p>           
         @endcan
       <?php } ?>
+      @error('year-from.*')
+      <p class="text-red-500 text-xs italic mt-4">
+          {{ $message }}
+      </p>
+      @enderror
+      @error('year-to.*')
+      <p class="text-red-500 text-xs italic mt-4">
+          {{ $message }}
+      </p>
+      @enderror
+      @error('experience.*')
+      <p class="text-red-500 text-xs italic mt-4">
+          {{ $message }}
+      </p>
+      @enderror
     </div>
     <div class="experience-list border-none">
       <?php

@@ -20,8 +20,8 @@ class ProfileController extends Controller
             'picture-insert' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
             'name' => 'required',
             'balance' => 'required|integer',
-            'year-from.*' => 'integer|between:1900,' . date("Y"),
-            'year-to.*' => [new YearToValidation($request->{"year-from"}, $request->{"year-to"})],
+            'year-from.*' => 'required|integer|between:1900,' . date("Y"),
+            'year-to.*' => ['required', new YearToValidation($request->{"year-from"}, $request->{"year-to"})],
             'experience.*' => 'required',
             'phone' => 'required|regex:/^[0-9]+$/'
         ]);

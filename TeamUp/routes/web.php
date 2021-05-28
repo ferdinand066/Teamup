@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,9 +24,11 @@ Route::get('/profile/{id}', [\App\Http\Controllers\ProfileController::class, 'in
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/profile/{id}/update', [\App\Http\Controllers\ProfileController::class, 'update'])->middleware('self');
-    Route::get('/team/create', [\App\Http\Controllers\TeamController::class, 'index']);
+    Route::get('/team/create', [\App\Http\Controllers\TeamController::class, 'insert']);
     Route::get('/notification', [\App\Http\Controllers\NotificationController::class, 'index']);
-    
-    Route::post('/team/create/insert-team', [\App\Http\Controllers\TeamController::class, 'insert']);
+    Route::get('/team/team-leader/{id}', [\App\Http\Controllers\TeamController::class, 'search_leader']);
+    Route::post('/team/create/insert-team', [\App\Http\Controllers\TeamController::class, 'make']);
 });
 
+Route::get('/team', [\App\Http\Controllers\TeamController::class, 'index']);
+Route::get('/team/view/{id}', [\App\Http\Controllers\TeamController::class, 'details']);

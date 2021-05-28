@@ -40,7 +40,7 @@ $(function () {
     getCountComponent();
 
     $("button.new-experience").on('click', function(){
-        var temp = $('.experience-list').append(`
+        $('.experience-list').append(`
         <div class="py-5 max-w-lg sm:border-t sm:border-gray-200">
            <div class="grid gap-y-6 gap-x-4 sm:grid-cols-6">
             <div class="col-span-3 sm:col-span-1">

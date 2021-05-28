@@ -56,6 +56,6 @@ class YearToValidation implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'Year To must be integer and bigger than Year From';
     }
 }
