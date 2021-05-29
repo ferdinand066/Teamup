@@ -1,0 +1,9 @@
+.team-card:nth-child(3n){
+    background-color: #FEE2E2;
+}
+.team-card:nth-child(3n+1){
+    background-color: #FEF3C7;
+}
+.team-card:nth-child(3n+2){
+    background-color: #D1FAE5;
+}

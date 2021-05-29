@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/team');
 });
 Auth::routes();
 
@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notification', [\App\Http\Controllers\NotificationController::class, 'index']);
     Route::get('/team/team-leader/{id}', [\App\Http\Controllers\TeamController::class, 'search_leader']);
     Route::post('/team/create/insert-team', [\App\Http\Controllers\TeamController::class, 'make']);
+Route::post('/team/{id}/insert', [\App\Http\Controllers\TeamController::class, 'make_detail'])->middleware('join-team');
 });
 
 Route::get('/team', [\App\Http\Controllers\TeamController::class, 'index']);

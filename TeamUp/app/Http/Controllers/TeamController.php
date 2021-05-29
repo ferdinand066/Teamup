@@ -5,18 +5,59 @@ namespace App\Http\Controllers;
 use App\Models\Position;
 use App\Models\Team;
 use App\Models\User;
+use ArrayObject;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Object_;
 
 class TeamController extends Controller
 {
     //
     public function index(){
-        $team = DB::table('teams')->paginate(8);
         $position = Position::all();
-        return view('team.index', compact(['team', 'position']));
+        if (!request('team_name') && !request('position_name') && !request('creator_name')){
+            $team = DB::table('teams')->paginate(8);
+            return view('team.index', compact(['team', 'position']));
+        }
+        
+        if(request('team_name')){
+            $team = DB::table('teams')->
+                where('name', 'like', '%' . request('team_name') . '%')->paginate(8);
+            return view('team.index', compact(['team', 'position']));
+        }
+
+        if(request('position_name')){
+            $temp = Position::where('name', 'like', '%' . request('position_name') . '%')->pluck('id')->toArray();
+
+            if (count($temp) > 0){
+                $team = DB::table('teams')->where('position_list', 'like', '%' . $temp[0] . '%');
+                if (count($temp) > 1){
+                    for($i = 1; $i < count($temp) - 1; $i++){
+                        $team = $team->orWhere('position_list', 'like', '%' . $temp[$i] . '%');
+                    }
+                    $team = $team->orWhere('position_list', 'like', '%' . $temp[count($temp) - 1] . '%')->paginate(8);
+                } else {
+                    $team = DB::table('teams')->where('position_list', 'like', '%' . $temp[0] . '%')->paginate(8);
+                }
+                
+                return view('team.index', compact(['team', 'position']));
+            }
+            
+            $team = null;
+            return view('team.index', compact(['team', 'position']));
+            
+        }
+
+        if (request('creator_name')){
+            $team = DB::table('teams')->join('users', 'users.id', '=', 'teams.creator_id')->
+                select('teams.*')->where('users.name', 'like', '%' . request('creator_name') . '%')->paginate(8);
+            return view('team.index', compact(['team', 'position']));
+        }
+
+        return redirect('/');
     }
 
     public function search_leader(Request $request){
@@ -79,5 +120,9 @@ class TeamController extends Controller
             'address' => json_encode($address_data)
         ]);
         return redirect('/');
+    }
+
+    public function make_detail(Request $request){
+        
     }
 }

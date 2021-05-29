@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\TeamDetail;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,9 +15,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            UserSeeder::class,
-            PositionSeeder::class,
-            TeamSeader::class
+            // UserSeeder::class,
+            // PositionSeeder::class,
+            // TeamSeader::class,
+            TeamDetailSeeder::class
         ]);
     }
 }

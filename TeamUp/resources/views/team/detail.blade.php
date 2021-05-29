@@ -35,7 +35,7 @@
           <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
             Disqualify
           </button>
-          <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+          <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
             Advance to offer
           </button>
         </div>
@@ -215,7 +215,39 @@
             </div>
           </section>
         </div>
+        <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
+          <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
+            <h2 id="timeline-title" class="text-lg font-medium text-gray-900">Request Position</h2>
+            <div class="col-span-6">
+              <label for="position" class="block text-sm font-medium text-gray-700">Choose the position that you are interested in in this team </label>
+              <div class="job-container py-2">
+                {{-- <span class="job-list inline-flex items-center mx-0.5 my-1 px-4 pr-1 py-1 rounded-full text-sm font-medium text-indigo-800">
+                  <span class="mr-3">{{ 'Article ' . $i }} </span>
+                  <input type="hidden" name="employee_list[]" value="asd">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 opacity-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </span> --}}
+              </div>
 
+              <div class="mt-1 flex">
+                <select id="position" name="position" autocomplete="position" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  @foreach (json_decode($data->position_list) as $key => $value)
+                    <option value="{{ $value->id }}"> {{$position_list[array_search($value->id, $idx)]['name'] }} </option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <form action="/team/{{ request()->id }}/insert" method="POST">
+              @csrf
+              <div class="mt-6 flex flex-col justify-stretch">
+                  <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Request Position
+                  </button>
+              </div>
+            </form>
+          </div>
+        </section>
       </div>
     </main>
   </div>  

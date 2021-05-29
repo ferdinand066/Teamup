@@ -28,16 +28,18 @@ class ProfileController extends Controller
 
 
         $new_name = "";
+        $user = DB::table('users')->where('id', $id)->first();
+        
         if(isset($request->{ 'picture-insert' })){
             $image = $request->file('picture-insert');
             $new_name = time() . '_' . $image->getClientOriginalName();
             $image->move(public_path('images/profile'), $new_name);
-        }
 
-        $user = DB::table('users')->where('id', $id)->first();
-        if ($user->{'picture_path'} != null){
-            $filename = public_path() . '\\images\\profile\\' . $user->{'picture_path'};
-            unlink($filename);
+            
+            if ($user->{'picture_path'} != null){
+                $filename = public_path() . '\\images\\profile\\' . $user->{'picture_path'};
+                unlink($filename);
+            }
         }
 
         $data_list = array();
@@ -60,7 +62,7 @@ class ProfileController extends Controller
             'balance' => $request->balance,
             'phone' => $request->phone,
             'experience' => (($data_list == []) ? null : json_encode($data_list)),
-            'picture_path' => ($request->{'picture-insert'} == null) ? null : $new_name
+            'picture_path' => ($request->{'picture-insert'} == null) ? $user->{'picture_path'} : $new_name
         ]);
         return redirect('/');
     }
