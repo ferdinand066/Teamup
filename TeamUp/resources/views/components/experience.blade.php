@@ -1,5 +1,5 @@
 <?php
-          $single_data = json_decode($data);
+    $single_data = json_decode($data);
 ?>
 <div class="py-5 max-w-lg sm:border-t sm:border-gray-200">
     <div class="grid gap-y-6 gap-x-4 sm:grid-cols-6">

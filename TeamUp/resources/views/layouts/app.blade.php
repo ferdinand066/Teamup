@@ -93,7 +93,7 @@
             <a href="#" class="{{ request()->is('dashboard') ? 'border-indigo-500 text-gray-900 ' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 ' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
               Dashboard
             </a>
-            <a href="/team" class="{{ request()->is('team', 'team/view/*') ? 'border-indigo-500 text-gray-900 ' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 ' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+            <a href="{{ route('view.team') }}" class="{{ request()->is('team', 'team/view/*') ? 'border-indigo-500 text-gray-900 ' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 ' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
               Team
             </a>
             <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
@@ -171,22 +171,23 @@
                   From: "transform opacity-100 scale-100"
                   To: "transform opacity-0 scale-95"
               -->
-              <div class="dropdown user-not-active-dropdown origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+              <div class="dropdown z-50 user-not-active-dropdown origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                 <!-- Active: "bg-gray-100", Not Active: "" -->
-                <a href="/profile/{{ Auth::user()->id }}" class="{{ request()->is('profile/' . Auth::user()->id) ? 'bg-gray-100 ' : '' }}block px-4 py-2 text-sm text-gray-700 menuitem" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
-                <a href="/team/team-leader/{{ Auth::user()->id }}" class="{{ request()->is('team/team-leader/' . Auth::user()->id) ? 'bg-gray-100 ' : '' }}block px-4 py-2 text-sm text-gray-700 menuitem" role="menuitem" tabindex="-1" id="user-menu-item-1">Created Team</a>
-                <a href="{{route('logout')}}" onclick="event.preventDefault();
+                <a href="{{ route('profile', [Auth::user()->id]) }}" class="{{ request()->is('profile/' . Auth::user()->id) ? 'bg-gray-100 ' : '' }}block px-4 py-2 text-sm text-gray-700 menuitem" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                <a href="{{ route('search.leader', [Auth::user()->id]) }}" class="{{ request()->is('team/team-leader/' . Auth::user()->id) ? 'bg-gray-100 ' : '' }}block px-4 py-2 text-sm text-gray-700 menuitem" role="menuitem" tabindex="-1" id="user-menu-item-1">Created Team</a>
+                <a href="{{ route('logout') }}" onclick="event.preventDefault();
                 document.getElementById('logout-form').submit();" class="{{ request()->is('logout') ? 'bg-gray-100 ' : '' }}block px-4 py-2 text-sm text-gray-700 menuitem" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
               
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                  {{ csrf_field() }}
-                </form>
+
               
               </div>
             </div>
             @endguest
           </div>
 
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+            {{ csrf_field() }}
+          </form>
           
         </div>
       </div>
@@ -197,11 +198,11 @@
       <div class="pt-2 pb-3 space-y-1">
         <!-- Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
         <a href="#" class="{{ request()->is('dashboard') ? 'bg-indigo-50 border-indigo-500 text-indigo-700 ' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 ' }} block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6">Dashboard</a>
-        <a href="/team" class="{{ request()->is('team', 'team/view/*') ? 'bg-indigo-50 border-indigo-500 text-indigo-700 ' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 ' }} hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6">Team</a>
+        <a href=" {{ route('view.team') }}" class="{{ request()->is('team', 'team/view/*') ? 'bg-indigo-50 border-indigo-500 text-indigo-700 ' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 ' }} hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6">Team</a>
         <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6">Projects</a>
         <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6">Calendar</a>
         @guest
-        <a href="{{route('login')}}" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6">Sign in</a>
+        <a href="{{ route('login') }}" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium sm:pl-5 sm:pr-6">Sign in</a>
         @endguest
       </div>
       @guest
@@ -219,7 +220,7 @@
             <div class="text-base font-medium text-gray-800">{{Auth::user()->name}}</div>
             <div class="text-sm font-medium text-gray-500">{{Auth::user()->email}}</div>
           </div>
-          <a href="/notification" class="ml-auto flex-shrink-0">
+          <a href="{{ route('notification') }}" class="ml-auto flex-shrink-0">
             <button class="ml-auto flex-shrink-0 bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <span class="sr-only">View notifications</span>
               <!-- Heroicon name: outline/bell -->
@@ -230,12 +231,13 @@
           </a>
         </div>
         <div class="mt-3 space-y-1">
-          <a href="/profile/{{ Auth::user()->id }}" class="{{ request()->is('profile/' . Auth::user()->id) ? 'bg-indigo-50 border-indigo-500 text-indigo-700 ' 
+          <a href="{{ route('profile', [Auth::user()->id]) }}" class="{{ request()->is('profile/' . Auth::user()->id) ? 'bg-indigo-50 border-indigo-500 text-indigo-700 ' 
             : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 ' }}block px-4 py-2 text-base font-medium sm:px-6">Your Profile</a>
-          <a href="/team/team-leader/{{ Auth::user()->id }}" class="{{ request()->is('team/team-leader/' . Auth::user()->id ) ? 'bg-indigo-50 border-indigo-500 text-indigo-700 ' 
+          <a href="{{ route('search.leader', [Auth::user()->id])}}" class="{{ request()->is('team/team-leader/' . Auth::user()->id ) ? 'bg-indigo-50 border-indigo-500 text-indigo-700 ' 
             : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 ' }}
             block px-4 py-2 text-base font-medium sm:px-6">Created Team</a>
-          <a href="/logout" class="{{ request()->is('logout') ? 'bg-gray-100 ' : '' }}block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 sm:px-6">Sign out</a>
+          <a href="{{ route('logout')}}" onclick="event.preventDefault();
+          document.getElementById('logout-form').submit();" class="{{ request()->is('logout') ? 'bg-gray-100 ' : '' }}block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 sm:px-6">Sign out</a>
           </div>
       </div>
       @endguest

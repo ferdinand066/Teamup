@@ -1,9 +1,9 @@
 $(function () {
     $("#search-button").on('click', function(){
         var search = $("#search").val().trim();
-        if(search == "") return;
+        if(search == "") window.location.href = '/team';
         
-        if($("#search_by").val() == "team-name"){
+        else if($("#search_by").val() == "team-name"){
             var a = new URLSearchParams({
                 team_name: search
             })
@@ -20,5 +20,10 @@ $(function () {
             window.location.href = '/team?' + a.toString();
         }
         
+    })
+
+
+    $(".team-card").hover(function(){
+        $(this).toggleClass('animate__animated').toggleClass('animate__pulse');
     })
 });

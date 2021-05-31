@@ -16,19 +16,33 @@
 ?>
 
 <div class="min-h-screen bg-gray-100">
+  @error('id')
+    {{ $message }}
+  @enderror
+  @error('position')
+    {{ $message }}
+  @enderror
     <main class="py-10">
       <!-- Page header -->
       <div class="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
         <div class="flex items-center space-x-5">
           <div class="flex-shrink-0">
             <div class="relative">
-              <img class="h-16 w-16 rounded-full" src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80" alt="">
-              <span class="absolute inset-0 shadow-inner rounded-full" aria-hidden="true"></span>
+              <a href="{{ route('profile', [$creator->id]) }}">
+                @if($creator->picture_path != null)
+                  <img class="h-16 w-16 rounded-full" src="{{ asset('images/profile/' . $creator->picture_path) }}" alt="">
+                @else
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20" viewBox="0 0 18 18" fill="rgba(55, 65, 81, var(--tw-bg-opacity))">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+                </svg>
+                @endif
+                <span class="absolute inset-0 shadow-inner rounded-full" aria-hidden="true"></span>
+              </a>
             </div>
           </div>
           <div>
             <h1 class="text-2xl font-bold text-gray-900">{{ $data->name }}</h1>
-            <p class="text-sm font-medium text-gray-500">Made by : <a href="/profile/{{ $creator->id }}" class="text-gray-900">{{ $creator->name }}</a> on <time datetime="{{ date_format($data->created_at, 'Y-m-d') }}">{{ date_format($data->created_at, 'M d, Y') }}</time></p>
+            <p class="text-sm font-medium text-gray-500">Made by : <a href="{{ route('profile', [$creator->id]) }}" class="text-gray-900">{{ $creator->name }}</a> on <time datetime="{{ date_format($data->created_at, 'Y-m-d') }}">{{ date_format($data->created_at, 'M d, Y') }}</time></p>
           </div>
         </div>
         <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
@@ -215,21 +229,42 @@
             </div>
           </section>
         </div>
+
         <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
+          @auth
+          @cannot('update-profile', [$creator->id, Auth::user()->id])
+          <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
+            <h2 id="timeline-title" class="text-lg font-medium text-gray-900">Request Position</h2>
+            <div class="col-span-6">
+              <form action="{{ route('team.insert.detail', [request()->id]) }}" method="POST">
+                <label for="position" class="block text-sm font-medium text-gray-700">Choose the position that you are interested in in this team </label>
+                @error(['position', 'id'])
+                <p class="block text-sm font-medium text-red-500">{{ $message }}</p>
+                @enderror
+                <div class="mt-1 flex">
+                  <select id="position" name="position" autocomplete="position" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    @foreach (json_decode($data->position_list) as $key => $value)
+                      <option value="{{ $value->id }}"> {{$position_list[array_search($value->id, $idx)]['name'] }} </option>
+                    @endforeach
+                  </select>
+                </div>
+                
+            </div>
+            
+            @csrf
+            <div class="mt-6 flex flex-col justify-stretch">
+              <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Request Position
+              </button>
+            </div>
+            </form>
+          </div>
+          @endcannot
+          @else
           <div class="bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
             <h2 id="timeline-title" class="text-lg font-medium text-gray-900">Request Position</h2>
             <div class="col-span-6">
               <label for="position" class="block text-sm font-medium text-gray-700">Choose the position that you are interested in in this team </label>
-              <div class="job-container py-2">
-                {{-- <span class="job-list inline-flex items-center mx-0.5 my-1 px-4 pr-1 py-1 rounded-full text-sm font-medium text-indigo-800">
-                  <span class="mr-3">{{ 'Article ' . $i }} </span>
-                  <input type="hidden" name="employee_list[]" value="asd">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 opacity-0" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                  </svg>
-                </span> --}}
-              </div>
-
               <div class="mt-1 flex">
                 <select id="position" name="position" autocomplete="position" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                   @foreach (json_decode($data->position_list) as $key => $value)
@@ -238,15 +273,16 @@
                 </select>
               </div>
             </div>
-            <form action="/team/{{ request()->id }}/insert" method="POST">
+            <form action="{{ route('login') }}" method="GET">
               @csrf
               <div class="mt-6 flex flex-col justify-stretch">
                   <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Request Position
+                    Login to Request
                   </button>
               </div>
             </form>
           </div>
+          @endauth
         </section>
       </div>
     </main>

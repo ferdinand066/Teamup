@@ -28,7 +28,8 @@ class TeamDetailFactory extends Factory
             //
             'team_id' => Team::inRandomOrder()->limit(1)->select('id')->get()->toArray()['0']['id'],
             'member_id' => User::inRandomOrder()->limit(1)->select('id')->get()->toArray()['0']['id'],
-            'position_id' => Position::inRandomOrder()->limit(1)->select('id')->get()->toArray()['0']['id']
+            'position_id' => Position::inRandomOrder()->limit(1)->select('id')->get()->toArray()['0']['id'],
+            'is_accepted' => $this->faker->boolean(50)
         ];
     }
 }

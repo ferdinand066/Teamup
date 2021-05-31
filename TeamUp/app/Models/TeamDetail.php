@@ -12,7 +12,8 @@ class TeamDetail extends Model
     protected $fillable = [
         'team_id',
         'member_id',
-        'position_id'
+        'position_id',
+        'is_accepted'
     ];
 
     /**

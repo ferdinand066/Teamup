@@ -21,6 +21,7 @@ class CreateTeamDetailsTable extends Migration
             $table->foreign('member_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('position_id')->references('id')->on('positions')->onDelete('cascade');
             $table->primary(array('team_id', 'member_id'));
+            $table->boolean('is_accepted');
             $table->timestamps();
         });
     }

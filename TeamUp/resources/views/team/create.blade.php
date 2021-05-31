@@ -6,7 +6,7 @@
   <script src="{{ asset('js/team/create.js') }}"></script>
 @endsection
 @section('content')
-<form action="/team/create/insert-team" method="POST">
+<form action="{{ route('team.insert') }}" method="POST">
 <div class="space-y-6 mt-6 px-2 sm:px-6">
     @csrf
     <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">

@@ -19,7 +19,7 @@ class ProfileController extends Controller
         $this->validate($request, [
             'picture-insert' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
             'name' => 'required',
-            'balance' => 'required|integer',
+            // 'balance' => 'required|integer',
             'year-from.*' => 'required|integer|between:1900,' . date("Y"),
             'year-to.*' => ['required', new YearToValidation($request->{"year-from"}, $request->{"year-to"})],
             'experience.*' => 'required',
@@ -59,7 +59,7 @@ class ProfileController extends Controller
 
         DB::table('users')->where('id', $id)->update([
             'name' => $request->name,
-            'balance' => $request->balance,
+            // 'balance' => $request->balance,
             'phone' => $request->phone,
             'experience' => (($data_list == []) ? null : json_encode($data_list)),
             'picture_path' => ($request->{'picture-insert'} == null) ? $user->{'picture_path'} : $new_name
