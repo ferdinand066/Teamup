@@ -15,6 +15,6 @@ class TeamDetailSeeder extends Seeder
     public function run()
     {
         //
-        TeamDetail::factory()->count(500)->create();
+        TeamDetail::factory()->count(2000)->create();
     }
 }

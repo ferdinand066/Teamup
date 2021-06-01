@@ -39,7 +39,8 @@ class TeamFactory extends Factory
             'full_description' => $this->faker->text(200),
             'salary' => $this->faker->numberBetween(1, 100000),
             'position_list' => json_encode(Position::inRandomOrder()->limit($times)->select('id')->get()->toArray()),
-            'address'=> json_encode($address_data)
+            'address'=> json_encode($address_data),
+            'is_closed' => $this->faker->boolean(20)
         ];
     }
 }

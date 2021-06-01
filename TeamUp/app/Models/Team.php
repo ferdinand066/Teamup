@@ -18,7 +18,8 @@ class Team extends Model
         'full_description',
         'salary',
         'position_list',
-        'address'
+        'address',
+        'is_closed'
     ];
 
     /**

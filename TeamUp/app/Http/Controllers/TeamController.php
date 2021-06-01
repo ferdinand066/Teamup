@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Position;
 use App\Models\Team;
+use App\Models\TeamDetail;
 use App\Models\User;
 use App\Rules\IdInData;
 use ArrayObject;
@@ -19,11 +20,13 @@ class TeamController extends Controller
 {
     //
     public function index(){
+        
         $position = Position::all();
         if (!request('team_name') && !request('position_name') && !request('creator_name')){
             $team = DB::table('teams')
                 ->join('users', 'users.id', '=', 'teams.creator_id')
                 ->select('teams.*','users.name as creator_name')
+                ->where('teams.is_closed', '=', false)
                 ->paginate(8);
             return view('team.index', compact(['team', 'position']));
         }
@@ -33,6 +36,7 @@ class TeamController extends Controller
                 ->join('users', 'users.id', '=', 'teams.creator_id')
                 ->select('teams.*', 'users.name as creator_name')
                 ->where('teams.name', 'like', '%' . request('team_name') . '%')
+                ->where('teams.is_closed', '=', false)
                 ->paginate(8);
             return view('team.index', compact(['team', 'position']));
         }
@@ -49,12 +53,13 @@ class TeamController extends Controller
                     for($i = 1; $i < count($temp) - 1; $i++){
                         $team = $team->orWhere('position_list', 'like', '%' . $temp[$i] . '%');
                     }
-                    $team = $team->orWhere('position_list', 'like', '%' . $temp[count($temp) - 1] . '%')->paginate(8);
+                    $team = $team->orWhere('position_list', 'like', '%' . $temp[count($temp) - 1] . '%')->where('teams.is_closed', '=', false)->paginate(8);
                 } else {
                     $team = DB::table('teams')
                         ->join('users', 'users.id', '=', 'teams.creator_id')
                         ->select('teams.*', 'users.name as creator_name')
                         ->where('position_list', 'like', '%' . $temp[0] . '%')
+                        ->where('teams.is_closed', '=', false)
                         ->paginate(8);
                 }
                 
@@ -71,6 +76,7 @@ class TeamController extends Controller
                 ->join('users', 'users.id', '=', 'teams.creator_id')
                 ->select('teams.*', 'users.name as creator_name')
                 ->where('users.name', 'like', '%' . request('creator_name') . '%')
+                ->where('teams.is_closed', '=', false)
                 ->paginate(8);
             return view('team.index', compact(['team', 'position']));
         }
@@ -101,7 +107,17 @@ class TeamController extends Controller
         }
         $creator = User::where('id', $data->creator_id)->first();
         $position = Position::all();
-        return view('team.detail', compact(['data', 'creator', 'position']));
+
+        // dd($creator);
+
+        $member = DB::table('team_details')
+            ->join('users', 'users.id', '=', 'team_details.member_id')
+            ->join('positions', 'positions.id', '=', 'team_details.position_id')
+            ->select('team_details.*', 'users.name as member_name', 'users.picture_path', 'positions.name as position_name')
+            ->where('team_details.team_id', '=', $request->id)
+            ->get();
+
+        return view('team.detail', compact(['data', 'creator', 'position', 'member']));
     }
 
     public function insert(Request $request){
@@ -142,6 +158,47 @@ class TeamController extends Controller
             'salary' => $request->salary,
             'position_list' => $position_list == [] ? null : json_encode($position_list),
             'address' => json_encode($address_data),
+            'created_at' => date('Y-m-d H:i:s'),
+            'is_closed' => false
+        ]);
+        return redirect('/');
+    }
+
+    public function edit_data(Request $request){
+        $this->validate($request, [
+            'name' => 'required',
+            'short_description' => 'required|max:80',
+            'full_description' => 'required',
+            'salary' => 'required|between:1,100000',
+            'city' => 'required',
+            'state' => 'required',
+            'postal_code' => 'regex:/^[0-9]+$/'
+        ]);
+
+        $position_list = array();
+        if(isset($request->position_list)){
+            foreach($request->position_list as $key => $value){
+                $data['id'] = $value;
+                array_push($position_list, $data);
+            }
+        } else {
+            return route('team.create');
+        }
+
+        sort($position_list);
+
+        $address_data['street'] = $request->street;
+        $address_data['city'] = $request->city;
+        $address_data['state'] = $request->state;
+        $address_data['postal_code'] = $request->postal_code;
+
+        DB::table('teams')->where('id', '=', $request->id)->update([
+            'name' => $request->name,
+            'short_description' => $request->short_description,
+            'full_description' => $request->full_description,
+            'salary' => $request->salary,
+            'position_list' => $position_list == [] ? null : json_encode($position_list),
+            'address' => json_encode($address_data),
             'created_at' => date('Y-m-d H:i:s')
         ]);
         return redirect('/');
@@ -173,4 +230,61 @@ class TeamController extends Controller
 
         return redirect('/');
     }
+
+    public function remove_member(Request $request){
+        if(TeamDetail::where([['member_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])->exists()){
+            TeamDetail::where([['member_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])
+                ->delete();
+            
+            return response()->json(['status' => 'Successfully decline the user']);
+            
+        }
+        return response()->json(['status' => 'Invalid Team or Member']);
+    }
+
+    public function accept_member(Request $request){
+        if(TeamDetail::where([['member_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])->exists()){
+            TeamDetail::where([['member_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])
+                ->update(['is_accepted' => true]);
+            
+            return response()->json(['status' => 'Successfully accept the user']);
+            
+        }
+        return response()->json(['status' => 'Invalid Team or Member']);
+    }
+
+
+    public function edit(Request $request){
+        $data = Team::where('id', '=', $request->id)->first();
+
+        $position_list = DB::table('positions')->get();
+        
+        if ($position_list == null) return redirect('/');
+        return view('team.edit', compact(['position_list', 'data']));
+    }
+
+    public function close(Request $request){
+        Team::where([['id', '=', $request->id], ['creator_id', '=', Auth::user()->id]])
+            ->update([
+                'is_closed' => true
+            ]);
+        
+        return redirect('/');
+    }
+
+    public function project(Request $request){
+        $position = Position::all();
+        $team = DB::table('teams')
+            ->join('users', 'users.id', '=', 'teams.creator_id')
+            ->join('team_details', 'teams.id', '=', 'team_details.team_id')
+            ->select('teams.*','users.name as creator_name')
+            ->where('teams.is_closed', '=', true)
+            ->where('teams.creator_id', '=', Auth::user()->id)
+            ->orWhere([['team_details.member_id', '=', Auth::user()->id], ['team_details.is_accepted', '=', true]])
+            ->paginate(8);
+        
+        return view('project.index', compact(['team', 'position']));
+    }
+
+
 }

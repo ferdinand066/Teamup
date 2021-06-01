@@ -26,8 +26,11 @@ $(function () {
         var job_name = $("#position").find(":selected").text();
         var job_id = $("#position").find(":selected").val();
 
-        var datas = $('input[name^="employee_list"]');
+        
 
+        var datas = $('input[name^="position_list"]');
+
+        console.log(datas.length);
         for (var i=0; i < datas.length; i++){
             if($(datas[i]).val() == job_id) return;
         }

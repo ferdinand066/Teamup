@@ -23,6 +23,7 @@ class CreateTeamsTable extends Migration
             $table->bigInteger('salary');
             $table->json('position_list');
             $table->json('address');
+            $table->boolean('is_closed');
             $table->timestamps();
         });
     }

@@ -24,12 +24,30 @@ class TeamDetailFactory extends Factory
      */
     public function definition()
     {
+        $team_data = Team::inRandomOrder()->limit(1)->select('id', 'creator_id')->get()->toArray()['0'];
+        $member_id = User::where('id', '!=', $team_data['creator_id'])->inRandomOrder()->limit(1)->select('id')->get()->toArray()['0']['id'];
+
+        // while(TeamDetail::where([['team_id', '=', $team_data['id']], ['member_id', '=', $member_id]])->get() != []){
+        //     $team_data = Team::inRandomOrder()->limit(1)->select('id', 'creator_id')->get()->toArray()['0'];
+        //     $member_id = User::where('id', '!=', $team_data['creator_id'])->inRandomOrder()->limit(1)->select('id')->get()->toArray()['0']['id'];
+        // }
+
+        
+        $teams = Team::where('id', '=', $team_data['id'])->get();
+        $position_list = json_decode($teams[0]->position_list);
+        
+        $temp = array();
+        foreach($position_list as $key => $value){
+            array_push($temp, $value->id);
+        }
+          
+
         return [
             //
-            'team_id' => Team::inRandomOrder()->limit(1)->select('id')->get()->toArray()['0']['id'],
-            'member_id' => User::inRandomOrder()->limit(1)->select('id')->get()->toArray()['0']['id'],
-            'position_id' => Position::inRandomOrder()->limit(1)->select('id')->get()->toArray()['0']['id'],
-            'is_accepted' => $this->faker->boolean(50)
+            'team_id' => $team_data['id'],
+            'member_id' => $member_id,
+            'position_id' => $temp[random_int(0, count($temp) - 1)],
+            'is_accepted' => $this->faker->boolean(70)
         ];
     }
 }
