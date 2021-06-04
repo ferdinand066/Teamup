@@ -13,3 +13,9 @@
     z-index: -1;
 }  
 
+.notif-bullet {
+    border-width: 1px; 
+    font-size: 0.55rem; 
+    line-height: 0.75rem
+}
+

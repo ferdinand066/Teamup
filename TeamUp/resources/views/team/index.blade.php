@@ -5,10 +5,6 @@
 @section('style-script')
   <link rel="stylesheet" href="{{ asset('css/team/index.css') }}">
   <script src="{{ asset('js/team/index.js') }}"></script>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-  />
 @endsection
 
 @section('content')
@@ -26,7 +22,7 @@
 <div class="px-2 sm:px-6">
   <div class="min-w-0 md:px-8 lg:px-0 xl:col-span-6 mt-5 sm:my-6">
     <div class="flex px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none md:px-3 lg:px-32 xl:px-5">
-      <select id="search_by" name="search_by" autocomplete="search_by" class="block w-40 py-2 px-3 border border-r-0 border-gray-300 bg-white rounded-none rounded-l-md shadow-sm focus:outline-none focus:ring-transparent focus:border-gray-300 sm:text-sm">
+      <select title="" id="search_by" name="search_by" class="block w-40 py-2 px-3 border border-r-0 border-gray-300 bg-white rounded-none rounded-l-md shadow-sm focus:outline-none focus:ring-transparent focus:border-gray-300 sm:text-sm">
         <option value="team-name">Team Name</option>
         <option value="creator-name">Creator Name</option>
         <option value="position-name">Position Name</option>

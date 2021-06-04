@@ -9,7 +9,7 @@ $(function () {
     })
 
     $('.remove-btn').on('click', function(){
-        $.ajaxSetup({
+        Setup({
             headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
@@ -28,8 +28,10 @@ $(function () {
                 'user_id': user_id
             },
             success: function (response) {
-                container.remove();
-                alert(response.status);
+                if (response.status == 'Successfully decline the user'){
+                    container.remove();
+                    addNewNotification('Success', 'Successfully Remove', 'Your response will be sent to the applicant');
+                }
             }
         });
     })
@@ -84,4 +86,5 @@ $(function () {
             }
         });
     })
+
 });

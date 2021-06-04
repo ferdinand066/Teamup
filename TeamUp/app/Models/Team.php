@@ -22,20 +22,19 @@ class Team extends Model
         'is_closed'
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-    ];
+    public function users(){
+        return $this->belongsTo(User::class);
+    }
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
+    public function members(){
+        return $this->belongsToMany(User::class, 'team_details', 'team_id', 'user_id')
+            ->withTimestamps()
+            ->withPivot(['is_accepted', 'position_id']);
+    }
 
-    ];
+    public function forums(){
+        return $this->hasMany(Forum::class);
+    }
+
+
 }

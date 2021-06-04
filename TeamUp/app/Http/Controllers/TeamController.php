@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TeamDecision;
+use App\Models\Forum;
 use App\Models\Position;
 use App\Models\Team;
 use App\Models\TeamDetail;
 use App\Models\User;
+use App\Notifications\TeamJoinDecision;
 use App\Rules\IdInData;
 use ArrayObject;
 use DateTime;
@@ -13,14 +16,14 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\Types\Object_;
 
 class TeamController extends Controller
 {
     //
     public function index(){
-        
+
         $position = Position::all();
         if (!request('team_name') && !request('position_name') && !request('creator_name')){
             $team = DB::table('teams')
@@ -101,23 +104,26 @@ class TeamController extends Controller
     }
 
     public function details(Request $request){
-        $data = Team::where('id', $request->id)->first();
+        $data = Team::with('forums')->where('id', $request->id)->first();
+
+        $forums = Forum::join('users', 'users.id', '=', 'forums.user_id')->orderBy('forums.created_at')
+            ->where('team_id', '=', $data->id)->select('forums.*', 'users.name', 'users.picture_path')->get();
+
         if($data == null){
             $this->index();
         }
         $creator = User::where('id', $data->creator_id)->first();
         $position = Position::all();
 
-        // dd($creator);
 
         $member = DB::table('team_details')
-            ->join('users', 'users.id', '=', 'team_details.member_id')
+            ->join('users', 'users.id', '=', 'team_details.user_id')
             ->join('positions', 'positions.id', '=', 'team_details.position_id')
             ->select('team_details.*', 'users.name as member_name', 'users.picture_path', 'positions.name as position_name')
             ->where('team_details.team_id', '=', $request->id)
             ->get();
 
-        return view('team.detail', compact(['data', 'creator', 'position', 'member']));
+        return view('team.detail', compact(['data', 'creator', 'position', 'member', 'forums']));
     }
 
     public function insert(Request $request){
@@ -222,7 +228,7 @@ class TeamController extends Controller
 
         DB::table('team_details')->insert([
             'team_id' => $request->id,
-            'member_id' => Auth::user()->id,
+            'user_id' => Auth::user()->id,
             'position_id' => $request->position,
             'is_accepted' => false,
             'created_at' => date('Y-m-d H:i:s')
@@ -232,9 +238,22 @@ class TeamController extends Controller
     }
 
     public function remove_member(Request $request){
-        if(TeamDetail::where([['member_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])->exists()){
-            TeamDetail::where([['member_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])
-                ->delete();
+        if(TeamDetail::where([['user_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])->exists()){
+            $team_detail = DB::table('team_details')
+            ->join('teams', 'teams.id', '=', 'team_details.team_id')
+            ->select('team_details.*', 'teams.name')
+            ->where([['user_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])
+            ->get();
+
+            TeamDetail::where([['user_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])->delete();
+            
+            event(new TeamDecision(
+                'Canceled', 'Declined', 'Your application at <a class="font-bold" href="/team/view/'. $team_detail[0]->team_id . '">'. 
+                $team_detail[0]->name .'</a> is <p class="font-semibold text-red-500">declined.</p>',
+                $request->user_id));
+
+            // Notification::send(User::where('id', '=', $request->user_id)->first(),
+            //         new TeamJoinDecision(`Your application at <a href="/team/view/`. $team_detail[0]->team_id . `">`. $team_detail[0]->name .`</a> is <p class="text-red-500">declined.</p>`));
             
             return response()->json(['status' => 'Successfully decline the user']);
             
@@ -243,8 +262,8 @@ class TeamController extends Controller
     }
 
     public function accept_member(Request $request){
-        if(TeamDetail::where([['member_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])->exists()){
-            TeamDetail::where([['member_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])
+        if(TeamDetail::where([['user_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])->exists()){
+            TeamDetail::where([['user_id', '=', $request->user_id], ['team_id', '=', $request->team_id]])
                 ->update(['is_accepted' => true]);
             
             return response()->json(['status' => 'Successfully accept the user']);
@@ -280,7 +299,7 @@ class TeamController extends Controller
             ->select('teams.*','users.name as creator_name')
             ->where('teams.is_closed', '=', true)
             ->where('teams.creator_id', '=', Auth::user()->id)
-            ->orWhere([['team_details.member_id', '=', Auth::user()->id], ['team_details.is_accepted', '=', true]])
+            ->orWhere([['team_details.user_id', '=', Auth::user()->id], ['team_details.is_accepted', '=', true]])
             ->paginate(8);
         
         return view('project.index', compact(['team', 'position']));

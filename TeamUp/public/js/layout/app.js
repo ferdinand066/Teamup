@@ -19,9 +19,26 @@ $(function () {
         } else {
             $("#mobile-menu").addClass('hidden')
             $("#mobile-menu").removeClass('block')
-        }
-
-        
-            
+        } 
     })
+
+    function init(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.get("/notification/count", 
+            function (data, textStatus, jqXHR) {
+                var notif_bullet = $('.notif-bullet');
+                if(data != 0){
+                    $(notif_bullet).html(data);
+                    $(notif_bullet).removeClass('hidden');
+                }
+            },
+        );
+    }
+
+    init();
 });

@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'self' => \App\Http\Middleware\IsSelfUser::class,
-        'join-team' => \App\Http\Middleware\IsNotSelfTeam::class
+        'join-team' => \App\Http\Middleware\IsNotSelfTeam::class,
+        'edit-team' => \App\Http\Middleware\SelfTeam::class,
     ];
 }

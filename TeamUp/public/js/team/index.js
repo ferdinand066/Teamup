@@ -24,6 +24,6 @@ $(function () {
 
 
     $(".team-card").hover(function(){
-        $(this).toggleClass('animate__animated').toggleClass('animate__pulse');
+        $(this).toggleClass('animate__animated').toggleClass('animate__headShake');
     })
 });
